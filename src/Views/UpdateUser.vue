@@ -9,38 +9,55 @@
         <div v-if="!loading">
             <div v-for="user in paginatedUsers" :key="user.id" class="user-detail-panel">
                 <h2><span class="material-icons">person</span> {{ user.name }}</h2>
-                <p><span class="material-icons">account_circle</span> <strong>Username is : </strong>[ {{ user.username }} ]</p>
-                <p>
-                    <span class="material-icons">email</span> <input type="text" v-model="user.email" placeholder="Email" />
+                <p><span class="material-icons">account_circle</span> <strong>Username is : </strong>[ {{ user.username }} ]
                 </p>
-                <span v-if="v$.email.$error">{{ getErrorMessage('email') }}</span>
-                <p><span class="material-icons">home</span> <input type="text" v-model="user.address.street"
-                        placeholder="Street" /></p>
-                <span v-if="v$.address.street.$error">{{ getErrorMessage('address.street') }}</span>
-                <p><span class="material-icons">location_city</span> <input type="text" v-model="user.address.city"
-                        placeholder="City" /></p>
-                <span v-if="v$.address.city.$error">{{ getErrorMessage('address.city') }}</span>
-                <p><span class="material-icons">phone</span> <input type="text" v-model="user.phone" placeholder="Phone" />
-                </p>
-                <span v-if="v$.phone.$error">{{ getErrorMessage('phone') }}</span>
-                <p><span class="material-icons">public</span> <input type="text" v-model="user.website"
-                        placeholder="Website" /></p>
-                <span v-if="v$.website.$error">{{ getErrorMessage('website') }}</span>
-                <p><span class="material-icons">business</span> <input type="text" v-model="user.company.name"
-                        placeholder="Company Name" /></p>
-                <span v-if="v$.company.name.$error">{{ getErrorMessage('company.name') }}</span>
-                <button @click="updateUser(user)">Update</button>
+                <div :class="{'flip-card':true,'active':front}">
+                    <div class="flip-card-inner">
+
+                        <div class="flip-card-front">
+                            <p>
+                                <span class="material-icons">email</span> <input type="text" v-model="user.email"
+                                    placeholder="Email" />
+                            </p>
+                            <span v-if="v$.email.$error">{{ getErrorMessage('email') }}</span>
+                            <p><span class="material-icons">phone</span> <input type="text" v-model="user.phone"
+                                    placeholder="Phone" /></p>
+        
+                            <span v-if="v$.phone.$error">{{ getErrorMessage('phone') }}</span>
+                            <p><span class="material-icons">public</span> <input type="text" v-model="user.website"
+                                    placeholder="Website" /></p>
+                            <span v-if="v$.website.$error">{{ getErrorMessage('website') }}</span>
+                            <button @click="flipCard()">next <i class="fas fa-arrow-right"></i></button>
+                        </div>
+                        <div class="flip-card-back">
+                            <p><span class="material-icons">home</span> <input type="text" v-model="user.address.street"
+                                    placeholder="Street" /></p>
+                            <span v-if="v$.address.street.$error">{{ getErrorMessage('address.street') }}</span>
+                            <p><span class="material-icons">location_city</span> <input type="text" v-model="user.address.city"
+                                    placeholder="City" /></p>
+                            <span v-if="v$.address.city.$error">{{ getErrorMessage('address.city') }}</span>
+        
+                            <p><span class="material-icons">business</span> <input type="text" v-model="user.company.name"
+                                    placeholder="Company Name" /></p>
+                            <span v-if="v$.company.name.$error">{{ getErrorMessage('company.name') }}</span>
+                            <button @click="flipCard()"><i class="fas fa-arrow-left"></i> back </button>
+                            <button @click="updateUser(user)">Update</button>
+        
+                        </div>
+                    </div>
+               
+                </div>
             </div>
             <div v-if="isUpdated" class="modal-overlay">
                 <div class="updated-dialog">
                     <p>Updated successfully</p>
                 </div>
-               
+
             </div>
         </div>
 
 
-        <Pagination v-if="!loading" v-model="currentPage" :total-pages="totalPages" />
+        <Pagination v-if="!loading" v-model="currentPage" :total-pages="totalPages"  @click="front = false"/>
     </div>
 </template>
   
@@ -62,6 +79,7 @@ export default {
         const usersPerPage = 1
         const loading = ref(false)
         const isUpdated = ref(false);
+        const front=ref(false);
         const newUser = ref({
             name: "",
             username: "",
@@ -84,7 +102,7 @@ export default {
                 bs: "",
             },
         });
-        
+
         let v$ = useVuelidate(rules, newUser, { messages });
 
 
@@ -94,7 +112,7 @@ export default {
             let fieldRules = rules;
             let fieldMessages = messages;
             let fieldState = v$.value;
-          
+
             for (const fieldName of fieldNames) {
                 fieldRules = fieldRules[fieldName];
                 fieldMessages = fieldMessages[fieldName];
@@ -131,34 +149,34 @@ export default {
 
 
         const updateUser = async (updatedUser) => {
-            newUser.value=updatedUser;
-       
+            newUser.value = updatedUser;
+
             loading.value = true;
             await v$.value.$touch();
-        
-            if (!v$.value.$error) 
-           
-            {
-               
-            store.dispatch('updateUser', updatedUser).then(() => {
-                loading.value = false;
-                isUpdated.value = true;
-                setTimeout(() => {
-                    isUpdated.value = false;
-                }, 1000);
-            
-            }
-                   
-            );
 
-        }
-        else{
-            loading.value = false;   
-            console.log('faild');
+            if (!v$.value.$error) {
+
+                store.dispatch('updateUser', updatedUser).then(() => {
+                    loading.value = false;
+                    isUpdated.value = true;
+                    setTimeout(() => {
+                        isUpdated.value = false;
+                    }, 1000);
+
+                }
+
+                );
+
+            }
+            else {
+                loading.value = false;
+                console.log('faild');
             }
         };
 
-
+       const flipCard=() =>{
+                    front.value=!front.value;
+                     };
         onMounted(() => {
             loading.value = true;
             store.dispatch('fetchUsers').then(() => {
@@ -166,7 +184,7 @@ export default {
             });
         });
 
-        return { newUser, searchQuery, currentPage, totalPages, paginatedUsers, loading, updateUser, isUpdated,getErrorMessage,v$ };
+        return { newUser, searchQuery, currentPage, totalPages, paginatedUsers, loading, updateUser, isUpdated, getErrorMessage, v$ ,flipCard,front};
     }
 };
 </script>
@@ -175,18 +193,20 @@ export default {
 @import '../style.css';
 
 
-.container{
+.container {
     box-shadow: 0 4px 8px 0 var(--shadow-color), 0 6px 20px 0 var(--shadow-color);
     overflow-y: auto;
     width: 80%;
     max-width: 600px;
-  }
-  h1 {
+}
+
+h1 {
     width: 100%;
     text-align: center;
     text-shadow: 2px 2px 4px var(--text-shadow-color);
 
 }
+
 p i {
     font-size: 90px;
 }
@@ -206,6 +226,7 @@ p i {
     color: var(--text-color);
     transition: all 0.3s ease;
     text-shadow: 2px 2px 4px var(--text-shadow-color);
+  
 }
 
 .user-detail-panel h2 {
@@ -261,7 +282,7 @@ input:focus {
     border-color: var(--primary-color);
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
-  
+
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -285,6 +306,34 @@ input:focus {
     border-radius: 5px;
     box-shadow: 0 2px 4px var(--shadow-color);
 }
+.flip-card {
+    position: relative;
+    perspective: 1000px; 
+   
+    display: block;
+  }
+  .flip-card-inner {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+    height: 210px;
+  }
+  .flip-card.active .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+  .flip-card-front, .flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+  .flip-card-back {
+    transform: rotateY(180deg); 
+}
 
+  
 </style>
   

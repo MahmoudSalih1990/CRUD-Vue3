@@ -164,10 +164,27 @@ import { useVuelidate } from "@vuelidate/core";
 import { rules, messages } from '../helpers/validationRules.js';
 import "leaflet/dist/leaflet.css";
 import { LMap, LTileLayer, LMarker } from "@vue-leaflet/vue-leaflet";
+import L from 'leaflet';
+import 'leaflet/dist/leaflet.css';
+
+delete L.Icon.Default.prototype._getIconUrl;
+
+import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
+import iconUrl from 'leaflet/dist/images/marker-icon.png';
+import shadowUrl from 'leaflet/dist/images/marker-shadow.png';
+
+L.Icon.Default.mergeOptions({
+  iconRetinaUrl,
+  iconUrl,
+  shadowUrl,
+});
+
 export default {
     components: {
         LMap,
         LTileLayer,
+        LMarker,
+        
     },
     setup() {
         const store = useStore();
@@ -223,11 +240,13 @@ export default {
 
             return errorMessage;
         }
+        
 
         const updateLatLng = (event) => {
             newUser.value.address.geo.lat = event.latlng.lat.toString();
             newUser.value.address.geo.lng = event.latlng.lng.toString();
-            marker.value = [event.latlng.lat, event.latlng.lng];
+            marker.value = { lat: event.latlng.lat, lng: event.latlng.lng };
+            console.log(marker.value);
         };
         const addUser = async () => {
             await v$.value.$touch();
@@ -284,9 +303,9 @@ export default {
 
 .create-user {
     box-shadow: 0 4px 8px 0 var(--shadow-color), 0 6px 20px 0 var(--shadow-color);
-    overflow-y: auto;
     width: 80%;
     max-width: 600px;
+  
 }
 
 .create-user h1,
@@ -329,7 +348,8 @@ input {
     width: 100%;
     border: 2px solid var(--border-color);
     border-radius: 5px;
-    font-size: 14px;
+    font-size: 20px;
+    color: var(--input-text-color);
 }
 
 input:focus {

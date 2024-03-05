@@ -88,7 +88,7 @@ export default {
   height: 100%;
   background: #333;
   color: #fff;
-  overflow: auto;
+ 
   transition: all 0.7s ease-in-out;
   z-index: 10;
   display: flex;
@@ -109,8 +109,8 @@ export default {
   gap: 10px;
 }
 .sidebar a.active .material-icons.md-36 {
-  color: var(--text-color); 
-  border: var(--text-color) solid 2px; 
+  color: var(--icon-text-color); 
+  border: var(--icon-text-color) solid 2px; 
   box-shadow: 0 0 5px rgba(110, 179, 208, 0.5); 
   text-shadow: 0 0 5px rgba(110, 179, 208, 0.5); 
 } 
@@ -149,7 +149,7 @@ export default {
   align-items: flex-start;
   width: 100%;
   padding: 100px 0 100px 0;
- 
+  overflow: auto;
 
 }
 
@@ -185,4 +185,6 @@ export default {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-}</style>
+}
+</style>
+

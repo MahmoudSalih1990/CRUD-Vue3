@@ -16,18 +16,20 @@
   --secondary-color: #0056b3;
   --background-color: #222;
   --text-color: #6eb3d0; 
+  --icon-text-color: #6eb3d0; 
   --shadow-color: rgba(0, 0, 0, 0.2);
   --border-color: #555;
   --input-background-color: #333;
   --input-text-color: #dbbf0d;
   --icon-color: #2e3133;
   --overlay-color: rgba(4, 4, 4, 0.619);
-  --dialog-background-color1: #323847;
   --dialog-background-color: #242424;;
   --text-shadow-color: #000000;
   --button-text-color: #fff;
   --secondary-color: #0a200b;
   --error-color: red;
+  --pagination-button-text-color:#fefefe;
+  --pagination-disable-text-color:#6e6e6e;
 }
 
 
@@ -36,14 +38,37 @@ body {
   min-width: 320px;
   min-height: 100vh;
   height: auto;
+  overflow: hidden;
 
 }
 
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
-    background-color: #ffffff;
+    --primary-color: #007bff;
+    --secondary-color: #0056b3;
+    --background-color: #f5f5f5;
+    --text-color: #213547; 
+    --icon-text-color: #6eb3d0; 
+    --shadow-color: rgba(6, 5, 5, 0.2);
+    --border-color: #ccc;
+    --input-background-color: #eee;
+    --input-text-color: #7cd312;
+    --icon-color: #555;
+    --overlay-color: rgba(240, 240, 240, 0.8);
+    --dialog-background-color: #ffffff;
+    --text-shadow-color: #928888;
+    --button-text-color: #150b0b;
+    --secondary-color: #a3aaa3;
+    --error-color: red;
+    --pagination-button-text-color:#141212;
+    --pagination-disable-text-color:#9e8a8a;
   }
+  
+  body {
+    color: var(--text-color);
+    background-color: var(--background-color);
+  }
+  
 
 }

@@ -50,7 +50,7 @@ export default {
   background: none;
   border: none;
   cursor: pointer;
-  color: #fefefe;
+  color: var(--pagination-button-text-color);
   font-size: 1.5rem;
 }
 
@@ -60,7 +60,7 @@ export default {
 }
 
 .pagination-button:disabled {
-  color: #6e6e6e;
+  color: var(--pagination-disable-text-color);
   cursor: not-allowed;
 }
 </style>
